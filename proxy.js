@@ -4,7 +4,7 @@ const app = express();
 const PORT = 4000;
 
 // Replace with your actual Apps Script web app URL
-const APPSCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz0TgeXk1Ks7UpyPftKOIobhpRIPnxB37Y-1UVSrPDyRQzFp-N8tgrhuYBr2fS8QlMZIg/exec';
+const APPSCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz_PLIQqwoMccf1an8aHF_RxWtp1BuzTK8qMSLogfmEONPtcgrLWM3yJyshFjes_NdCTg/exec';
 
 app.use(express.json());
 
