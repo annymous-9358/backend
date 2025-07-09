@@ -4,7 +4,7 @@ const app = express();
 const PORT = 4000;
 
 // Replace with your actual Apps Script web app URL
-const APPSCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz_PLIQqwoMccf1an8aHF_RxWtp1BuzTK8qMSLogfmEONPtcgrLWM3yJyshFjes_NdCTg/exec';
+const APPSCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwSOus1PUbcPc53gv9vfQBCcLEP9pGbLSVooTve-YZ5VRPTjPjwcHHAQESt7Ade2lCwow/exec';
 
 app.use(express.json());
 
@@ -38,18 +38,46 @@ app.post('/api', async (req, res) => {
   }
 });
 
-// Proxy GET requests (for HeadID fetch)
+// Enhanced GET requests - now supports both HeadID and Mobile number lookup
 app.get('/api', async (req, res) => {
   try {
-    const url = APPSCRIPT_URL + '?headId=' + encodeURIComponent(req.query.headId);
+    let url = APPSCRIPT_URL;
+    
+    // Check if it's a mobile number lookup
+    if (req.query.mobile) {
+      url += '?mobile=' + encodeURIComponent(req.query.mobile);
+      console.log('Mobile lookup request for:', req.query.mobile);
+    } 
+    // Check if it's a HeadID lookup (existing functionality)
+    else if (req.query.headId) {
+      url += '?headId=' + encodeURIComponent(req.query.headId);
+      console.log('HeadID lookup request for:', req.query.headId);
+    } 
+    // No valid parameter provided
+    else {
+      return res.status(400).json({ 
+        status: 'error', 
+        message: 'Please provide either mobile or headId parameter' 
+      });
+    }
+    
     const response = await fetch(url);
     const data = await response.json();
+    
+    // Log the response for debugging
+    console.log('Apps Script response:', data);
+    
     res.json(data);
   } catch (err) {
+    console.error('Proxy GET error:', err);
     res.status(500).json({ status: 'error', message: err.message });
   }
 });
 
 app.listen(PORT, () => {
   console.log(`Proxy server running on http://localhost:${PORT}`);
+  console.log('Supported endpoints:');
+  console.log('- POST /api - Submit form data');
+  console.log('- GET /api?headId=XXX - Fetch by HeadID');
+  console.log('- GET /api?mobile=XXX - Fetch by mobile number');
 });
