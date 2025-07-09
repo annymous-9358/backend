@@ -64,9 +64,6 @@ app.get('/api', async (req, res) => {
     const response = await fetch(url);
     const data = await response.json();
     
-    // Log the response for debugging
-    console.log('Apps Script response:', data);
-    
     res.json(data);
   } catch (err) {
     console.error('Proxy GET error:', err);
